@@ -2,43 +2,33 @@ from .primitives import *
 
 class _SubscriptableGenerator():
 	def __init__(self, generator, *args):
-		self.gen = generator
-		self.args = args
+		self.gen = generator(*args)
 
 	def __getitem__(self, key):
-		if isinstance(key, slice):
-			if not key.stop:
-				self.raiseInvalidSlice()
-			stop = key.stop
-			start = key.start if key.start else 0
-			step = key.step  if key.step else 1
+		try:
+			if isinstance(key, int):
+				self.ignore(key)
+				yield next(self.gen)
+			else:
+				step = key.step if key.step else 1
+				start = key.start if key.start else 0
 
-			if start < 0 or stop - start < 0 or step < 1:
-				self.raiseInvalidSlice()
+				i = start
+				self.ignore(start)
 
-			i = 0
-			for val in self.gen(*self.args):
-				if i >= start:
-					yield val
-					start = i + step
-				i = i + 1
-				if i == stop:
-					break
-		else:
-			try:
-				i = 0
-				for val in self.gen(*self.args):
-					if i != key:
-						pass
-					else:
-						yield val
-						break
-			except Exception:
-				self.raiseInvalidSlice()
+				while i < key.stop:
+					yield next(self.gen)
+					i = i + step
+					self.ignore(step-1)
+		except Exception:
+			self.raiseInvalidSlice(key)
 
 	def raiseInvalidSlice(self, key):
-		raise KeyError("[{0}:{1}] n'est pas une slice valide.".format(key.start, key.stop))
+		raise KeyError("{0} n'est pas une slice valide.".format(key))
 
+	def ignore(self, n):
+		for i in range(n):
+			next(self.gen)
 
 def _Row(shape, X, Y, interval):
 	i = 0
