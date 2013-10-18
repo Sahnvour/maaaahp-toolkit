@@ -28,7 +28,7 @@ class Map():
 
 	def add(self, *shapeOrGroup):
 		for s in shapeOrGroup:
-			if s.isGroup:
+			if isinstance(s, Group):
 				self.groups.append(s)
 			else:
 				self.shapes.append(s)
@@ -105,7 +105,6 @@ class Group(_Transformable):
 
 	def __init__(self, *args):
 		_Transformable.__init__(self)
-		self.isGroup = True
 		self.shapes = []
 		for s in args:
 			s.rotate(Transform.Identity)
@@ -123,7 +122,7 @@ class Group(_Transformable):
 
 	def add(self, *shapes):
 		for s in shapes:
-			if s.isGroup:
+			if isinstance(s, Group):
 				for s1 in s.shapes:
 					self.shapes.append(s1)
 			else:
@@ -148,7 +147,6 @@ class Shape(_Transformable):
 
 	def __init__(self, letter, thickness, X, Y, lenght, height):
 		_Transformable.__init__(self)
-		self.isGroup = False
 		self.letter = letter
 		self.thickness = thickness
 		self.X = X
