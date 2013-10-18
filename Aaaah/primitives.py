@@ -5,12 +5,6 @@ from . import pyperclip
 def toClipBoard(anything):
 	pyperclip.copy(str(anything))
 
-class Vec2():
-	def __init__(self, x, y):
-		self.x = x
-		self.y = y
-
-Point = Vec2
 
 class Map():
 
