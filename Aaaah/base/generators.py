@@ -30,12 +30,12 @@ class _Sliceable(object):
             raise KeyError("Key must be non-negative integer or slice, not {}"
                            .format(key))
 
-def _Row(shape, X, Y, interval):
+def _row(shape, X, Y, interval):
 	i = 0
 	while True:
 		yield lambda thickness, *args: shape(thickness, X + i, Y, *args)
 		i += interval
 
 
-def Row(*args):
-	return _Sliceable(_Row(*args))
+def row(*args):
+	return _Sliceable(_row(*args))

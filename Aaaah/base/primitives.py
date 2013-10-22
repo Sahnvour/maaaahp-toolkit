@@ -2,7 +2,7 @@ from operator import attrgetter
 from . import pyperclip
 
 
-def toClipBoard(anything):
+def to_clipboard(anything):
 	pyperclip.copy(str(anything))
 
 
@@ -33,7 +33,7 @@ class Map():
 			else:
 				self.shapes.append(s)
 
-	def toFile(self, fileName):
+	def to_file(self, fileName):
 		fichier = open(fileName, "w")
 		fichier.write(str(self))
 		fichier.close()
@@ -166,7 +166,7 @@ class Shape(_Transformable):
 			return "<{0} {1}>{2}{3}</{0}>".format(self.letter, self.params(), self.rotation, self.translation)
 		
 
-class Curve(Shape):
+class _Curve(Shape):
 
 	def __init__(self, thickness, X1, Y1, pivotX, pivotY, X2, Y2):
 
@@ -191,13 +191,16 @@ class _FullOrEmptyShape(Shape):
 		return "P=\"{0},{1},{2},{3},{4},{5}\"".format(self.thickness, self.X, self.Y, self.L, self.H, 1 if self.isFull else 0)
 
 
-def Line(thickness, X1, Y1, X2, Y2):
+def line(thickness, X1, Y1, X2, Y2):
 	return Shape("L", thickness, X1, Y1, X2, Y2)
 
 
-def Rectangle(thickness, X, Y, lenght, height, isFull):
+def rectangle(thickness, X, Y, lenght, height, isFull):
 	return _FullOrEmptyShape(_FullOrEmptyShape.Rectangle, thickness, X, Y, lenght, height, isFull)
 
 
-def Ellipsis(thickness, X, Y, lenght, height, isFull):
+def ellipsis(thickness, X, Y, lenght, height, isFull):
 	return _FullOrEmptyShape(_FullOrEmptyShape.Ellipsis, thickness, X, Y, lenght, height, isFull)
+
+def curve(thickness, X1, Y1, pivotX, pivotY, X2, Y2):
+	return _Curve(thickness, X1, Y1, pivotX, pivotY, X2, Y2)
