@@ -1,34 +1,34 @@
-from .primitives import *
+from itertools import islice
 
-class _SubscriptableGenerator():
-	def __init__(self, generator, *args):
-		self.gen = generator(*args)
+class _Sliceable(object):
+    """Sliceable(iterable) is an object that wraps 'iterable' and
+    generates items from 'iterable' when subscripted. For example:
 
-	def __getitem__(self, key):
-		try:
-			if isinstance(key, int):
-				self.ignore(key)
-				yield next(self.gen)
-			else:
-				step = key.step if key.step else 1
-				start = key.start if key.start else 0
+        >>> from itertools import count, cycle
+        >>> s = Sliceable(count())
+        >>> list(s[3:10:2])
+        [3, 5, 7, 9]
+        >>> list(s[3:6])
+        [13, 14, 15]
+        >>> next(Sliceable(cycle(range(7)))[11])
+        4
+        >>> s['string']
+        Traceback (most recent call last):
+            ...
+        KeyError: 'Key must be non-negative integer or slice, not string'
 
-				i = start
-				self.ignore(start)
+    """
+    def __init__(self, iterable):
+        self.iterable = iterable
 
-				while i < key.stop:
-					yield next(self.gen)
-					i = i + step
-					self.ignore(step-1)
-		except Exception:
-			self.raiseInvalidSlice(key)
-
-	def raiseInvalidSlice(self, key):
-		raise KeyError("{0} n'est pas une slice valide.".format(key))
-
-	def ignore(self, n):
-		for i in range(n):
-			next(self.gen)
+    def __getitem__(self, key):
+        if isinstance(key, int) and key >= 0:
+            return islice(self.iterable, key, key + 1)
+        elif isinstance(key, slice):
+            return islice(self.iterable, key.start, key.stop, key.step)
+        else:
+            raise KeyError("Key must be non-negative integer or slice, not {}"
+                           .format(key))
 
 def _Row(shape, X, Y, interval):
 	i = 0
@@ -38,4 +38,4 @@ def _Row(shape, X, Y, interval):
 
 
 def Row(*args):
-	return _SubscriptableGenerator(_Row, *args)
+	return _Sliceable(_Row(*args))
