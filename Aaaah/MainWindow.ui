@@ -59,8 +59,8 @@
      <rect>
       <x>10</x>
       <y>420</y>
-      <width>101</width>
-      <height>131</height>
+      <width>111</width>
+      <height>181</height>
      </rect>
     </property>
     <property name="title">
@@ -145,6 +145,51 @@
       </item>
      </layout>
     </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>130</y>
+       <width>46</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Epaisseur</string>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="thickness">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>130</y>
+       <width>42</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>10000</number>
+     </property>
+     <property name="value">
+      <number>1</number>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="isFull">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>160</y>
+       <width>81</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Forme Pleine</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
@@ -194,50 +239,31 @@
      </layout>
     </widget>
    </widget>
-   <widget class="QSpinBox" name="thickness">
-    <property name="geometry">
-     <rect>
-      <x>70</x>
-      <y>560</y>
-      <width>42</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="minimum">
-     <number>1</number>
-    </property>
-    <property name="maximum">
-     <number>10000</number>
-    </property>
-    <property name="value">
-     <number>1</number>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>560</y>
-      <width>46</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Epaisseur</string>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="ruler">
+   <widget class="QGroupBox" name="groupBox_3">
     <property name="geometry">
      <rect>
       <x>820</x>
-      <y>150</y>
-      <width>70</width>
-      <height>17</height>
+      <y>140</y>
+      <width>120</width>
+      <height>80</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Règle</string>
+    <property name="title">
+     <string>Affichage</string>
     </property>
+    <widget class="QCheckBox" name="ruler">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>70</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Règle</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

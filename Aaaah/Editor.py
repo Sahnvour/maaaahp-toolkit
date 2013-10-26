@@ -28,6 +28,8 @@ class Editor():
 		self.app.installEventFilter(self.mainWindow)
 		self.mainWindow.editor = self
 
+		self.map = prim.Map()
+
 		self.points = []
 		self.thickness = 1
 		self.isFull = Shape.Empty
@@ -37,6 +39,7 @@ class Editor():
 		sys.exit(self.app.exec_())
 
 	def set_shape(self, name):
+		self.points.clear()
 		if name in shapes.keys():
 			self.shape = shapes[name]
 		else:
@@ -55,29 +58,41 @@ class Editor():
 	def set_thickness(self, value):
 		self.thickness = value
 
+	def set_full(self, value):
+		self.isFull = Shape.Full if value else Shape.Empty
+
 	def process_shape(self):
 		points = [num for elem in self.points for num in elem]
-		func = self.shape['func']
-		args = inspect.getargspec(func)[0]
-		if 'isFull' in args:
-			shape = func(self.thickness, self.isFull, *points)
-		else:
-			shape = func(self.thickness, *points)
+		shape = self.make_shape(points)
+		self.map.add(shape)
 		print(shape)
 		#item = self.shape_to_item(name, shape, points)
 		#self.mainWindow.add_item()
 
-	def shape_to_item(self, shape, points):
-		item = None
+	def make_shape(self, points):
 		if self.shape['func'] is line:
-			item = QGraphicsLineItem()
+			points[2] = points[2] - points[0]
+			points[3] = points[3] - points[1]
+			return prim.line(self.thickness, *points)
+
 		elif self.shape['func'] is prim.curve:
-			1
+			points[2] = points[2] - points[0]
+			points[3] = points[3] - points[1]
+			points[4] = points[4] - points[0]
+			points[5] = points[5] - points[1]
+			return prim.curve(self.thickness, *points)
+
 		elif self.shape['func'] is prim.rectangle:
-			1
+			points[2] = points[2] - points[0]
+			points[3] = points[3] - points[1]
+			return prim.rectangle(self.thickness, self.isFull, *points)
+
 		elif self.shape['func'] is prim.ellipsis:
-			1
-		return item
+			points[2] = points[2] - points[0]
+			points[3] = points[3] - points[1]
+			return prim.ellipsis(self.thickness, self.isFull, *points)
+
+		raise RuntimeError("the shape wasnt a primitive one, this should never happen")
 
 
 if __name__ == "__main__":

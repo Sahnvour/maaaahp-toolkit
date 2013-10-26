@@ -12,8 +12,6 @@ class EditorWindow(QMainWindow):
 	def __init__(self, parent=None):
 		super(EditorWindow, self).__init__(parent)
 		self.setup()
-		self.clicks = []
-		self.map = Map()
 
 	def setup(self):
 		# Load UI
@@ -42,6 +40,7 @@ class EditorWindow(QMainWindow):
 
 		self.ui.thickness.valueChanged.connect(self.thickness_changed)
 		self.ui.ruler.stateChanged.connect(self.show_ruler)
+		self.ui.isFull.stateChanged.connect(self.full_shapes)
 
 	def eventFilter(self, source, event):
 		if event.type() == QEvent.MouseMove:
@@ -80,12 +79,15 @@ class EditorWindow(QMainWindow):
 
 	@pyqtSlot(int)
 	def show_ruler(self, state):
-		if state:
-			for l in self.ruler:
+		for l in self.ruler:
+			if state:
 				self.map_scene.addItem(l)
-		else:
-			for l in self.ruler:
+			else:
 				self.map_scene.removeItem(l)
+
+	@pyqtSlot(int)
+	def full_shapes(self, state):
+		self.editor.set_full(state)
 
 
 if __name__ == "__main__":

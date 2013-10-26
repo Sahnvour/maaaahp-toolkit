@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'MainWindow.ui'
 #
-# Created: Sat Oct 26 23:00:19 2013
+# Created: Sat Oct 26 23:23:17 2013
 #      by: PyQt5 UI code generator 5.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -28,7 +28,7 @@ class Ui_MainWindow(object):
         self.map_view.setRenderHints(QtGui.QPainter.Antialiasing|QtGui.QPainter.HighQualityAntialiasing|QtGui.QPainter.TextAntialiasing)
         self.map_view.setObjectName("map_view")
         self.groupBox = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox.setGeometry(QtCore.QRect(10, 420, 101, 131))
+        self.groupBox.setGeometry(QtCore.QRect(10, 420, 111, 181))
         self.groupBox.setObjectName("groupBox")
         self.layoutWidget = QtWidgets.QWidget(self.groupBox)
         self.layoutWidget.setGeometry(QtCore.QRect(10, 20, 85, 107))
@@ -63,6 +63,18 @@ class Ui_MainWindow(object):
         self.ellipsis.setObjectName("ellipsis")
         self.primitives_group.addButton(self.ellipsis)
         self.verticalLayout.addWidget(self.ellipsis)
+        self.label = QtWidgets.QLabel(self.groupBox)
+        self.label.setGeometry(QtCore.QRect(10, 130, 46, 21))
+        self.label.setObjectName("label")
+        self.thickness = QtWidgets.QSpinBox(self.groupBox)
+        self.thickness.setGeometry(QtCore.QRect(60, 130, 42, 22))
+        self.thickness.setMinimum(1)
+        self.thickness.setMaximum(10000)
+        self.thickness.setProperty("value", 1)
+        self.thickness.setObjectName("thickness")
+        self.isFull = QtWidgets.QCheckBox(self.groupBox)
+        self.isFull.setGeometry(QtCore.QRect(10, 160, 81, 17))
+        self.isFull.setObjectName("isFull")
         self.groupBox_2 = QtWidgets.QGroupBox(self.centralwidget)
         self.groupBox_2.setGeometry(QtCore.QRect(820, 10, 120, 121))
         self.groupBox_2.setObjectName("groupBox_2")
@@ -81,17 +93,11 @@ class Ui_MainWindow(object):
         self.file.setCheckable(False)
         self.file.setObjectName("file")
         self.verticalLayout_2.addWidget(self.file)
-        self.thickness = QtWidgets.QSpinBox(self.centralwidget)
-        self.thickness.setGeometry(QtCore.QRect(70, 560, 42, 22))
-        self.thickness.setMinimum(1)
-        self.thickness.setMaximum(10000)
-        self.thickness.setProperty("value", 1)
-        self.thickness.setObjectName("thickness")
-        self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(10, 560, 46, 21))
-        self.label.setObjectName("label")
-        self.ruler = QtWidgets.QCheckBox(self.centralwidget)
-        self.ruler.setGeometry(QtCore.QRect(820, 150, 70, 17))
+        self.groupBox_3 = QtWidgets.QGroupBox(self.centralwidget)
+        self.groupBox_3.setGeometry(QtCore.QRect(820, 140, 120, 80))
+        self.groupBox_3.setObjectName("groupBox_3")
+        self.ruler = QtWidgets.QCheckBox(self.groupBox_3)
+        self.ruler.setGeometry(QtCore.QRect(10, 20, 70, 17))
         self.ruler.setObjectName("ruler")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
@@ -114,9 +120,11 @@ class Ui_MainWindow(object):
         self.curve.setText(_translate("MainWindow", "Courbe"))
         self.rectangle.setText(_translate("MainWindow", "Rectangle"))
         self.ellipsis.setText(_translate("MainWindow", "Ellipse"))
+        self.label.setText(_translate("MainWindow", "Epaisseur"))
+        self.isFull.setText(_translate("MainWindow", "Forme Pleine"))
         self.groupBox_2.setTitle(_translate("MainWindow", "Copier vers"))
         self.clipboard.setText(_translate("MainWindow", "Presse papiers"))
         self.file.setText(_translate("MainWindow", "Fichier ..."))
-        self.label.setText(_translate("MainWindow", "Epaisseur"))
+        self.groupBox_3.setTitle(_translate("MainWindow", "Affichage"))
         self.ruler.setText(_translate("MainWindow", "Règle"))
 
