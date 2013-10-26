@@ -1,6 +1,8 @@
 from itertools import islice
 
 class _Sliceable(object):
+
+
     """Sliceable(iterable) is an object that wraps 'iterable' and
     generates items from 'iterable' when subscripted. For example:
 
@@ -18,6 +20,7 @@ class _Sliceable(object):
         KeyError: 'Key must be non-negative integer or slice, not string'
 
     """
+
     def __init__(self, iterable):
         self.iterable = iterable
 
@@ -30,12 +33,12 @@ class _Sliceable(object):
             raise KeyError("Key must be non-negative integer or slice, not {}"
                            .format(key))
 
+
 def _row(shape, X, Y, interval):
 	i = 0
 	while True:
 		yield lambda thickness, *args: shape(thickness, X + i, Y, *args)
 		i += interval
 
-
-def row(*args):
-	return _Sliceable(_row(*args))
+def row(shape, X, Y, interval):
+	return _Sliceable(_row(shape, X, Y, interval))

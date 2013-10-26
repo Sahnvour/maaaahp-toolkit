@@ -12,10 +12,10 @@ def grey_block(X, Y, width, height):
 	g = Group()
 
 	if width > height:
-		for i in range(0, height/2):
+		for i in range(0, height // 2):
 			g.add(grey_line(X, Y + i * 2, width))
 	else:
-		for i in range(0, width/2):
+		for i in range(0, width // 2):
 			g.add(grey_line(X + i * 2, Y, height, True))
 
 	return g
@@ -30,7 +30,7 @@ def triangle(thickness, x1, y1, x2, y2, x3, y3):
 
 def angle(thickness, x, y, lenght1, lenght2, angle, angleToOrigin=0):
 	angle = radians(angle)
-	angle2 = radians(angleToOrigin-90)
+	angle2 = radians(angleToOrigin - 90)
 
 	x1 = lenght1 * cos(angle2)
 	y1 = lenght1 * sin(angle2)
@@ -42,7 +42,8 @@ def angle(thickness, x, y, lenght1, lenght2, angle, angleToOrigin=0):
 
 	return Group(line1, line2)
 
-def any_rectangle(thickness, x1, y1, x2, y2, x3, y3, x4, y4, isFull):
+
+def any_rectangle(thickness, isFull, x1, y1, x2, y2, x3, y3, x4, y4):
 	width = sqrt( (x1-x2)**2 + (y1-y2)**2 )
 	height = sqrt( (x2-x3)**2 + (y2-y3)**2 )
 
@@ -56,7 +57,24 @@ def any_rectangle(thickness, x1, y1, x2, y2, x3, y3, x4, y4, isFull):
 	newx = (x1 - Ox) * cos(radians(-angle)) - (y1 - Oy) * sin(radians(-angle)) + Ox
 	newy = (x1 - Ox) * sin(radians(-angle)) + (y1 - Oy) * cos(radians(-angle)) + Oy
 
-	r = rectangle(thickness, newx, newy, width, height, isFull)
+	r = rectangle(thickness, isFull, newx, newy, width, height)
 	r.rotate(Rotation(angle))
 
 	return r
+
+
+Orientations = {
+	"ul" :  (-1, -1),
+	"u"  :  (0, -1),
+	"ur" :  (1, -1),
+	"l"  :  (-1, 0),
+	"r"  :  (1, 0),
+	"bl" :  (-1, 1),
+	"b"  :  (0, 1),
+	"br" :  (1, 1)
+}
+
+def half_circle(thickness, x, y, orientation):
+	t = Orientations[orientation]
+
+	return curve(thickness, x, y, t[0], t[1], 0, 0)
