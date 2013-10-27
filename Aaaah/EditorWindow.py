@@ -10,7 +10,7 @@ class MouseMode():
 	Line = 1
 	Curve = 2
 	Rectangle = 3
-	Ellipsis = 4
+	Ellipse = 4
 
 class AliasedRectItem(QGraphicsRectItem):
 
@@ -44,7 +44,7 @@ class EditorWindow(QMainWindow):
 		'line' : MouseMode.Line,
 		'curve' : MouseMode.Curve,
 		'rectangle' : MouseMode.Rectangle,
-		'ellipsis' : MouseMode.Ellipsis }
+		'ellipse' : MouseMode.Ellipse }
 
 
 	def __init__(self, parent=None):
@@ -112,7 +112,7 @@ class EditorWindow(QMainWindow):
 				width, height = pos.x() - x, pos.y() - y
 				r.setRect(QRectF(x, y, width, height).normalized())
 
-			elif self.mouse_mode == MouseMode.Ellipsis:
+			elif self.mouse_mode == MouseMode.Ellipse:
 				e = self.preview_shape
 				origin = self.editor.points[0] # dirty hack again
 				x, y = origin[0], origin[1]
@@ -128,7 +128,7 @@ class EditorWindow(QMainWindow):
 				self.map_scene.addItem(self.preview_shape)
 
 		elif event.type() == QEvent.MouseButtonRelease:
-			if self.mouse_mode in [MouseMode.Line, MouseMode.Rectangle, MouseMode.Ellipsis]:
+			if self.mouse_mode in [MouseMode.Line, MouseMode.Rectangle, MouseMode.Ellipse]:
 				self.mouse_mode = MouseMode.Free
 				self.map_scene.removeItem(self.preview_shape)
 				pos = self.ui.map_view.mapFromGlobal(event.globalPos())

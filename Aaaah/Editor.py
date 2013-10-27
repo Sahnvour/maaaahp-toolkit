@@ -15,7 +15,7 @@ shapes = {
 
 	'rectangle' : {'func' : prim.rectangle, 'points' : 2},
 
-	'ellipsis' 	: {'func' : prim.ellipsis, 'points' : 2}
+	'ellipse' 	: {'func' : prim.ellipse, 'points' : 2}
 	}
 
 class Editor():
@@ -89,10 +89,10 @@ class Editor():
 			points[3] = points[3] - points[1]
 			return prim.rectangle(self.thickness, self.isFull, *points)
 
-		elif self.shape['func'] is prim.ellipsis:
+		elif self.shape['func'] is prim.ellipse:
 			points[2] = points[2] - points[0]
 			points[3] = points[3] - points[1]
-			return prim.ellipsis(self.thickness, self.isFull, *points)
+			return prim.ellipse(self.thickness, self.isFull, *points)
 
 		raise RuntimeError("the shape wasnt a primitive one, this should never happen")
 
@@ -114,7 +114,7 @@ class Editor():
 			pen = QPen(QColor(), self.thickness, Qt.SolidLine, Qt.SquareCap)
 			pen.setJoinStyle(Qt.MiterJoin)
 
-		elif self.shape['func'] is prim.ellipsis:
+		elif self.shape['func'] is prim.ellipse:
 			points[2] = points[2] - points[0]
 			points[3] = points[3] - points[1]
 			item = QGraphicsEllipseItem(*points[:4])
@@ -125,7 +125,6 @@ class Editor():
 
 		item.setPen(pen)
 		if self.isFull:
-			print("full shape")
 			item.setBrush(QColor(0,0,0))
 
 		return item

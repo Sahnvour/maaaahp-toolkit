@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'MainWindow.ui'
 #
-# Created: Sun Oct 27 13:53:01 2013
+# Created: Sun Oct 27 17:02:27 2013
 #      by: PyQt5 UI code generator 5.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -57,12 +57,12 @@ class Ui_MainWindow(object):
         self.rectangle.setObjectName("rectangle")
         self.primitives_group.addButton(self.rectangle)
         self.verticalLayout.addWidget(self.rectangle)
-        self.ellipsis = QtWidgets.QRadioButton(self.layoutWidget)
-        self.ellipsis.setEnabled(True)
-        self.ellipsis.setMouseTracking(False)
-        self.ellipsis.setObjectName("ellipsis")
-        self.primitives_group.addButton(self.ellipsis)
-        self.verticalLayout.addWidget(self.ellipsis)
+        self.ellipse = QtWidgets.QRadioButton(self.layoutWidget)
+        self.ellipse.setEnabled(True)
+        self.ellipse.setMouseTracking(False)
+        self.ellipse.setObjectName("ellipse")
+        self.primitives_group.addButton(self.ellipse)
+        self.verticalLayout.addWidget(self.ellipse)
         self.label = QtWidgets.QLabel(self.groupBox)
         self.label.setGeometry(QtCore.QRect(10, 130, 46, 21))
         self.label.setObjectName("label")
@@ -127,7 +127,7 @@ class Ui_MainWindow(object):
         self.line.setText(_translate("MainWindow", "Ligne"))
         self.curve.setText(_translate("MainWindow", "Courbe"))
         self.rectangle.setText(_translate("MainWindow", "Rectangle"))
-        self.ellipsis.setText(_translate("MainWindow", "Ellipse"))
+        self.ellipse.setText(_translate("MainWindow", "Ellipse"))
         self.label.setText(_translate("MainWindow", "Epaisseur"))
         self.isFull.setText(_translate("MainWindow", "Forme Pleine"))
         self.groupBox_2.setTitle(_translate("MainWindow", "Copier vers"))

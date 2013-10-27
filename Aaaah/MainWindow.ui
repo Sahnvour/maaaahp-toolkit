@@ -128,7 +128,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QRadioButton" name="ellipsis">
+       <widget class="QRadioButton" name="ellipse">
         <property name="enabled">
          <bool>true</bool>
         </property>
