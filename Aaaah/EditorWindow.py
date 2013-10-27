@@ -40,8 +40,11 @@ class AliasedLineItem(QGraphicsLineItem):
 
 class EditorWindow(QMainWindow):
 
-	mouse_modes = { 'line' : MouseMode.Line, 'curve' : MouseMode.Curve, 'rectangle' : MouseMode.Rectangle,
-					'ellipsis' : MouseMode.Ellipsis }
+	mouse_modes = {
+		'line' : MouseMode.Line,
+		'curve' : MouseMode.Curve,
+		'rectangle' : MouseMode.Rectangle,
+		'ellipsis' : MouseMode.Ellipsis }
 
 
 	def __init__(self, parent=None):
@@ -52,7 +55,7 @@ class EditorWindow(QMainWindow):
 		# Load UI
 		self.ui = Ui_MainWindow()
 		self.ui.setupUi(self)
-		self.ui.clipboard.clicked.connect(self.to_clipboard)
+		
 
 		self.setup_scene()
 		self.setup_signals()
@@ -75,6 +78,7 @@ class EditorWindow(QMainWindow):
 		for button in self.ui.primitives_group.buttons():
 			button.clicked.connect(self.shape_changed)
 
+		self.ui.clipboard.clicked.connect(self.to_clipboard)
 		self.ui.thickness.valueChanged.connect(self.thickness_changed)
 		self.ui.ruler.stateChanged.connect(self.show_ruler)
 		self.ui.isFull.stateChanged.connect(self.full_shapes)
@@ -108,6 +112,13 @@ class EditorWindow(QMainWindow):
 				width, height = pos.x() - x, pos.y() - y
 				r.setRect(QRectF(x, y, width, height).normalized())
 
+			elif self.mouse_mode == MouseMode.Ellipsis:
+				e = self.preview_shape
+				origin = self.editor.points[0] # dirty hack again
+				x, y = origin[0], origin[1]
+				width, height = pos.x() - x, pos.y() - y
+				e.setRect(QRectF(x, y, width, height).normalized())
+
 		elif event.type() == QEvent.MouseButtonPress and self.mouse_mode == MouseMode.Free:
 			if source is self.ui.map_view:
 				self.mouse_mode = self.get_mouse_mode()
@@ -117,7 +128,7 @@ class EditorWindow(QMainWindow):
 				self.map_scene.addItem(self.preview_shape)
 
 		elif event.type() == QEvent.MouseButtonRelease:
-			if self.mouse_mode in [MouseMode.Line, MouseMode.Rectangle]:
+			if self.mouse_mode in [MouseMode.Line, MouseMode.Rectangle, MouseMode.Ellipsis]:
 				self.mouse_mode = MouseMode.Free
 				self.map_scene.removeItem(self.preview_shape)
 				pos = self.ui.map_view.mapFromGlobal(event.globalPos())

@@ -97,10 +97,12 @@ class Editor():
 		raise RuntimeError("the shape wasnt a primitive one, this should never happen")
 
 	def make_item(self, points):
+		pen = None
+		item = None
+
 		if self.shape['func'] is line:
 			item = QGraphicsLineItem(*points[:4])
 			pen = QPen(QColor(), self.thickness, Qt.SolidLine, Qt.RoundCap)
-			item.setPen(pen)
 
 		elif self.shape['func'] is prim.curve:
 			raise NotImplemented()
@@ -111,13 +113,20 @@ class Editor():
 			item = AliasedRectItem(*points[:4])
 			pen = QPen(QColor(), self.thickness, Qt.SolidLine, Qt.SquareCap)
 			pen.setJoinStyle(Qt.MiterJoin)
-			item.setPen(pen)
 
 		elif self.shape['func'] is prim.ellipsis:
-			raise NotImplemented()
+			points[2] = points[2] - points[0]
+			points[3] = points[3] - points[1]
+			item = QGraphicsEllipseItem(*points[:4])
+			pen = QPen(QColor(), self.thickness, Qt.SolidLine, Qt.SquareCap)
 
 		else:
 			raise RuntimeError("the shape wasnt a primitive one, this should never happen")
+
+		item.setPen(pen)
+		if self.isFull:
+			print("full shape")
+			item.setBrush(QColor(0,0,0))
 
 		return item
 
