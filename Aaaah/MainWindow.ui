@@ -51,7 +51,7 @@
      <enum>Qt::ScrollBarAlwaysOff</enum>
     </property>
     <property name="renderHints">
-     <set>QPainter::Antialiasing|QPainter::HighQualityAntialiasing|QPainter::TextAntialiasing</set>
+     <set>QPainter::Antialiasing</set>
     </property>
    </widget>
    <widget class="QGroupBox" name="groupBox">
@@ -196,7 +196,7 @@
      <rect>
       <x>820</x>
       <y>10</y>
-      <width>120</width>
+      <width>171</width>
       <height>121</height>
      </rect>
     </property>
@@ -244,8 +244,8 @@
      <rect>
       <x>820</x>
       <y>140</y>
-      <width>120</width>
-      <height>80</height>
+      <width>171</width>
+      <height>181</height>
      </rect>
     </property>
     <property name="title">
@@ -262,6 +262,35 @@
      </property>
      <property name="text">
       <string>Règle</string>
+     </property>
+    </widget>
+    <widget class="QSlider" name="opacity">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>70</y>
+       <width>141</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <number>90</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>51</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Opacité :</string>
      </property>
     </widget>
    </widget>

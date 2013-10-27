@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'MainWindow.ui'
 #
-# Created: Sat Oct 26 23:23:17 2013
+# Created: Sun Oct 27 13:53:01 2013
 #      by: PyQt5 UI code generator 5.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -25,7 +25,7 @@ class Ui_MainWindow(object):
         self.map_view.setAutoFillBackground(False)
         self.map_view.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.map_view.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.map_view.setRenderHints(QtGui.QPainter.Antialiasing|QtGui.QPainter.HighQualityAntialiasing|QtGui.QPainter.TextAntialiasing)
+        self.map_view.setRenderHints(QtGui.QPainter.Antialiasing)
         self.map_view.setObjectName("map_view")
         self.groupBox = QtWidgets.QGroupBox(self.centralwidget)
         self.groupBox.setGeometry(QtCore.QRect(10, 420, 111, 181))
@@ -76,7 +76,7 @@ class Ui_MainWindow(object):
         self.isFull.setGeometry(QtCore.QRect(10, 160, 81, 17))
         self.isFull.setObjectName("isFull")
         self.groupBox_2 = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox_2.setGeometry(QtCore.QRect(820, 10, 120, 121))
+        self.groupBox_2.setGeometry(QtCore.QRect(820, 10, 171, 121))
         self.groupBox_2.setObjectName("groupBox_2")
         self.layoutWidget1 = QtWidgets.QWidget(self.groupBox_2)
         self.layoutWidget1.setGeometry(QtCore.QRect(10, 20, 101, 89))
@@ -94,11 +94,19 @@ class Ui_MainWindow(object):
         self.file.setObjectName("file")
         self.verticalLayout_2.addWidget(self.file)
         self.groupBox_3 = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox_3.setGeometry(QtCore.QRect(820, 140, 120, 80))
+        self.groupBox_3.setGeometry(QtCore.QRect(820, 140, 171, 181))
         self.groupBox_3.setObjectName("groupBox_3")
         self.ruler = QtWidgets.QCheckBox(self.groupBox_3)
         self.ruler.setGeometry(QtCore.QRect(10, 20, 70, 17))
         self.ruler.setObjectName("ruler")
+        self.opacity = QtWidgets.QSlider(self.groupBox_3)
+        self.opacity.setGeometry(QtCore.QRect(10, 70, 141, 20))
+        self.opacity.setMaximum(90)
+        self.opacity.setOrientation(QtCore.Qt.Horizontal)
+        self.opacity.setObjectName("opacity")
+        self.label_2 = QtWidgets.QLabel(self.groupBox_3)
+        self.label_2.setGeometry(QtCore.QRect(10, 50, 51, 16))
+        self.label_2.setObjectName("label_2")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1000, 21))
@@ -127,4 +135,5 @@ class Ui_MainWindow(object):
         self.file.setText(_translate("MainWindow", "Fichier ..."))
         self.groupBox_3.setTitle(_translate("MainWindow", "Affichage"))
         self.ruler.setText(_translate("MainWindow", "Règle"))
+        self.label_2.setText(_translate("MainWindow", "Opacité :"))
 
