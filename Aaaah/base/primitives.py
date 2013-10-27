@@ -27,6 +27,9 @@ class Map():
 		
 		return txt
 
+	def __len__(self):
+		return len(self.shapes) + sum(map(len, self.groups))
+
 	def add(self, *shapes):
 		for s in shapes:
 			if isinstance(s, Group):
@@ -119,16 +122,16 @@ class Group(_Transformable):
 	def __init__(self, *args):
 		_Transformable.__init__(self)
 		self.shapes = []
-		for s in args:
-			s.rotate(Transform.Identity)
-			s.translate(Transform.Identity)
-			self.shapes.append(s)
+		self.add(*args)
 		self.setup()
 
 	def __str__(self):
 		g = "<G P=\"{0},{1}\">".format(self.X, self.Y)
 		g += ''.join(map(str, self.shapes)) + "</G>"
 		return g
+
+	def __len__(self):
+		return len(self.shapes)
 
 	def setup(self):
 		if len(self.shapes):
