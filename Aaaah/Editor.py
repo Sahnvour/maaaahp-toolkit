@@ -41,19 +41,21 @@ class Editor():
 		sys.exit(self.app.exec_())
 
 	def set_shape(self, name):
+		print("shape to", name)
 		self.points.clear()
 		if name in shapes.keys():
 			self.shape = shapes[name]
 		else:
 			raise RuntimeError("{} is not a valid shape name".format(name))
 
-	def set_point(self, pos):
+	def add_point(self, pos):
 		if self.shape is None:
 			return
-
+		print("new point", [pos.x(), pos.y()])
 		self.points.append([pos.x(), pos.y()])
 
 		if len(self.points) == self.shape['points']:
+			print("building shape")
 			self.process_shape()
 			self.points.clear()
 
@@ -69,7 +71,7 @@ class Editor():
 		item = self.make_item(points[:])
 		shape = self.make_shape(points[:])
 		self.map.add(shape)
-		self.mainWindow.add_item(item)
+		self.mainWindow.add_shape(item)
 
 	def make_shape(self, points):
 		if self.shape['func'] is line:
@@ -78,11 +80,13 @@ class Editor():
 			return prim.line(self.thickness, *points)
 
 		elif self.shape['func'] is prim.curve:
+			print("doing curve")
 			points[2] = points[2] - points[0]
 			points[3] = points[3] - points[1]
 			points[4] = points[4] - points[0]
 			points[5] = points[5] - points[1]
-			return prim.curve(self.thickness, *points)
+			pts = [points[i] for i in [0, 1, 4, 5, 2, 3]]
+			return prim.curve(self.thickness, *pts)
 
 		elif self.shape['func'] is prim.rectangle:
 			points[2] = points[2] - points[0]
@@ -103,9 +107,13 @@ class Editor():
 		if self.shape['func'] is line:
 			item = QGraphicsLineItem(*points[:4])
 			pen = QPen(QColor(), self.thickness, Qt.SolidLine, Qt.RoundCap)
+			item.setPen(pen)
 
 		elif self.shape['func'] is prim.curve:
-			raise NotImplemented()
+			points = [points[i] for i in [0, 1, 4, 5, 2, 3]]
+			item = QPainterPath(QPointF(*points[:2]))
+			item.cubicTo(QPointF(*points[2:4]), QPointF(*points[2:4]), QPointF(*points[4:]))
+			pen = QPen(QColor(), self.thickness, Qt.SolidLine, Qt.RoundCap)
 
 		elif self.shape['func'] is prim.rectangle:
 			points[2] = points[2] - points[0]
@@ -113,18 +121,19 @@ class Editor():
 			item = AliasedRectItem(*points[:4])
 			pen = QPen(QColor(), self.thickness, Qt.SolidLine, Qt.SquareCap)
 			pen.setJoinStyle(Qt.MiterJoin)
+			item.setPen(pen)
 
 		elif self.shape['func'] is prim.ellipse:
 			points[2] = points[2] - points[0]
 			points[3] = points[3] - points[1]
 			item = QGraphicsEllipseItem(*points[:4])
 			pen = QPen(QColor(), self.thickness, Qt.SolidLine, Qt.SquareCap)
+			item.setPen(pen)
 
 		else:
 			raise RuntimeError("the shape wasnt a primitive one, this should never happen")
 
-		item.setPen(pen)
-		if self.isFull:
+		if self.isFull and self.shape['func'] in [prim.rectangle, prim.ellipse]:
 			item.setBrush(QColor(0,0,0))
 
 		return item

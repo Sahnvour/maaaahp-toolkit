@@ -212,7 +212,7 @@ class _FullOrEmptyShape(Shape):
 	
 	
 	Rectangle = 'R'
-	Ellipsis = 'E'
+	Ellipse = 'E'
 
 	def __init__(self, letter, thickness, isFull, X, Y, width, height):
 		self.isFull = isFull
@@ -229,8 +229,8 @@ def line(thickness, X1, Y1, width, height):
 def rectangle(thickness, isFull, X, Y, width, height):
 	return _FullOrEmptyShape(_FullOrEmptyShape.Rectangle, thickness, isFull, X, Y, width, height)
 
-def ellipsis(thickness, isFull, X, Y, width, height):
-	return _FullOrEmptyShape(_FullOrEmptyShape.Ellipsis, thickness, isFull, X, Y, width, height)
+def ellipse(thickness, isFull, X, Y, width, height):
+	return _FullOrEmptyShape(_FullOrEmptyShape.Ellipse, thickness, isFull, X, Y, width, height)
 
 def curve(thickness, X1, Y1, pivotX, pivotY, X2, Y2):
 	return _Curve(thickness, X1, Y1, pivotX, pivotY, X2, Y2)
