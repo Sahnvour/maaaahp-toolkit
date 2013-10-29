@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'MainWindow.ui'
 #
-# Created: Sun Oct 27 21:57:05 2013
+# Created: Tue Oct 29 17:40:19 2013
 #      by: PyQt5 UI code generator 5.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -111,6 +111,9 @@ class Ui_MainWindow(object):
         self.pharma.setEnabled(False)
         self.pharma.setGeometry(QtCore.QRect(80, 20, 70, 17))
         self.pharma.setObjectName("pharma")
+        self.mode = QtWidgets.QLabel(self.centralwidget)
+        self.mode.setGeometry(QtCore.QRect(140, 420, 101, 16))
+        self.mode.setObjectName("mode")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1000, 21))
@@ -126,7 +129,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Maaaahp Toolkit"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "YAMAXANADU"))
         self.groupBox.setTitle(_translate("MainWindow", "Formes primitives"))
         self.line.setText(_translate("MainWindow", "Ligne"))
         self.curve.setText(_translate("MainWindow", "Courbe"))
@@ -141,4 +144,5 @@ class Ui_MainWindow(object):
         self.ruler.setText(_translate("MainWindow", "Règle"))
         self.label_2.setText(_translate("MainWindow", "Opacité :"))
         self.pharma.setText(_translate("MainWindow", "Pharma"))
+        self.mode.setText(_translate("MainWindow", "Mode :"))
 

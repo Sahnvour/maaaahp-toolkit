@@ -71,7 +71,7 @@ class Editor():
 		shape = self.make_shape(points[:])
 		item.set_shape(shape)
 		self.map.add(shape)
-		self.mainWindow.add_shape(item)
+		self.mainWindow.map_scene.addItem(item)
 
 	def make_shape(self, points):
 		if self.shape['func'] is line:
@@ -113,7 +113,7 @@ class Editor():
 			item = CustomCurveItem(*points[:2])
 			item.set_anchor(*points[2:4])
 			item.set_end(*points[4:])
-			pen = QPen(QColor(), self.thickness, Qt.SolidLine, Qt.SquareCap)
+			pen = QPen(QColor(), self.thickness, Qt.SolidLine, Qt.RoundCap)
 			item.setPen(pen)
 			item.setup()
 

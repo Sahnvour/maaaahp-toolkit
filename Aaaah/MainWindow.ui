@@ -23,7 +23,7 @@
    <cursorShape>ArrowCursor</cursorShape>
   </property>
   <property name="windowTitle">
-   <string>Maaaahp Toolkit</string>
+   <string>YAMAXANADU</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QGraphicsView" name="map_view">
@@ -309,6 +309,19 @@
       <string>Pharma</string>
      </property>
     </widget>
+   </widget>
+   <widget class="QLabel" name="mode">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>420</y>
+      <width>101</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Mode :</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
