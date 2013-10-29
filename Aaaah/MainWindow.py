@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'MainWindow.ui'
 #
-# Created: Sun Oct 27 17:02:27 2013
+# Created: Sun Oct 27 21:57:05 2013
 #      by: PyQt5 UI code generator 5.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -19,7 +19,7 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.map_view = QtWidgets.QGraphicsView(self.centralwidget)
-        self.map_view.setGeometry(QtCore.QRect(10, 10, 800, 400))
+        self.map_view.setGeometry(QtCore.QRect(10, 10, 802, 402))
         self.map_view.viewport().setProperty("cursor", QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.map_view.setMouseTracking(True)
         self.map_view.setAutoFillBackground(False)
@@ -94,7 +94,7 @@ class Ui_MainWindow(object):
         self.file.setObjectName("file")
         self.verticalLayout_2.addWidget(self.file)
         self.groupBox_3 = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox_3.setGeometry(QtCore.QRect(820, 140, 171, 181))
+        self.groupBox_3.setGeometry(QtCore.QRect(820, 140, 171, 101))
         self.groupBox_3.setObjectName("groupBox_3")
         self.ruler = QtWidgets.QCheckBox(self.groupBox_3)
         self.ruler.setGeometry(QtCore.QRect(10, 20, 70, 17))
@@ -107,6 +107,10 @@ class Ui_MainWindow(object):
         self.label_2 = QtWidgets.QLabel(self.groupBox_3)
         self.label_2.setGeometry(QtCore.QRect(10, 50, 51, 16))
         self.label_2.setObjectName("label_2")
+        self.pharma = QtWidgets.QCheckBox(self.groupBox_3)
+        self.pharma.setEnabled(False)
+        self.pharma.setGeometry(QtCore.QRect(80, 20, 70, 17))
+        self.pharma.setObjectName("pharma")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1000, 21))
@@ -136,4 +140,5 @@ class Ui_MainWindow(object):
         self.groupBox_3.setTitle(_translate("MainWindow", "Affichage"))
         self.ruler.setText(_translate("MainWindow", "Règle"))
         self.label_2.setText(_translate("MainWindow", "Opacité :"))
+        self.pharma.setText(_translate("MainWindow", "Pharma"))
 

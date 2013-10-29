@@ -1,12 +1,13 @@
 import sys
-import inspect
-from EditorWindow import *
+from .EditorWindow import *
+from .items import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-import base.primitives as prim
-import base.composites as comp
-import base.generators as gen
+from .base import primitives as prim
+from .base import composites as comp
+from .base import generators as gen
+
 
 shapes = {
 	'line' 		: {'func' : prim.line, 'points' : 2},
@@ -41,7 +42,6 @@ class Editor():
 		sys.exit(self.app.exec_())
 
 	def set_shape(self, name):
-		print("shape to", name)
 		self.points.clear()
 		if name in shapes.keys():
 			self.shape = shapes[name]
@@ -51,11 +51,10 @@ class Editor():
 	def add_point(self, pos):
 		if self.shape is None:
 			return
-		print("new point", [pos.x(), pos.y()])
+		
 		self.points.append([pos.x(), pos.y()])
 
 		if len(self.points) == self.shape['points']:
-			print("building shape")
 			self.process_shape()
 			self.points.clear()
 
@@ -70,6 +69,7 @@ class Editor():
 		
 		item = self.make_item(points[:])
 		shape = self.make_shape(points[:])
+		item.set_shape(shape)
 		self.map.add(shape)
 		self.mainWindow.add_shape(item)
 
@@ -80,7 +80,6 @@ class Editor():
 			return prim.line(self.thickness, *points)
 
 		elif self.shape['func'] is prim.curve:
-			print("doing curve")
 			points[2] = points[2] - points[0]
 			points[3] = points[3] - points[1]
 			points[4] = points[4] - points[0]
@@ -105,20 +104,23 @@ class Editor():
 		item = None
 
 		if self.shape['func'] is line:
-			item = QGraphicsLineItem(*points[:4])
+			item = CustomLineItem(*points[:4])
 			pen = QPen(QColor(), self.thickness, Qt.SolidLine, Qt.RoundCap)
 			item.setPen(pen)
 
 		elif self.shape['func'] is prim.curve:
 			points = [points[i] for i in [0, 1, 4, 5, 2, 3]]
-			item = QPainterPath(QPointF(*points[:2]))
-			item.cubicTo(QPointF(*points[2:4]), QPointF(*points[2:4]), QPointF(*points[4:]))
-			pen = QPen(QColor(), self.thickness, Qt.SolidLine, Qt.RoundCap)
+			item = CustomCurveItem(*points[:2])
+			item.set_anchor(*points[2:4])
+			item.set_end(*points[4:])
+			pen = QPen(QColor(), self.thickness, Qt.SolidLine, Qt.SquareCap)
+			item.setPen(pen)
+			item.setup()
 
 		elif self.shape['func'] is prim.rectangle:
 			points[2] = points[2] - points[0]
 			points[3] = points[3] - points[1]
-			item = AliasedRectItem(*points[:4])
+			item = CustomRectItem(*points[:4])
 			pen = QPen(QColor(), self.thickness, Qt.SolidLine, Qt.SquareCap)
 			pen.setJoinStyle(Qt.MiterJoin)
 			item.setPen(pen)
@@ -126,7 +128,7 @@ class Editor():
 		elif self.shape['func'] is prim.ellipse:
 			points[2] = points[2] - points[0]
 			points[3] = points[3] - points[1]
-			item = QGraphicsEllipseItem(*points[:4])
+			item = CustomEllipseItem(*points[:4])
 			pen = QPen(QColor(), self.thickness, Qt.SolidLine, Qt.SquareCap)
 			item.setPen(pen)
 

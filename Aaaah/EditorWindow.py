@@ -1,9 +1,10 @@
 import sys
-from base.primitives import *
+from .base.primitives import *
+from .items import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from MainWindow import Ui_MainWindow
+from .MainWindow import Ui_MainWindow
 
 class MouseMode():
 	Free = 0
@@ -12,31 +13,6 @@ class MouseMode():
 	Curve2 = 3
 	Rectangle = 4
 	Ellipse = 5
-
-class AliasedRectItem(QGraphicsRectItem):
-
-
-	def __init__(self, *args):
-		super().__init__(*args)
-
-	def paint(self, painter, option, widget=0):
-		hints = painter.renderHints()
-		painter.setRenderHint(QPainter.Antialiasing, False)
-		super().paint(painter, option, widget)
-		painter.setRenderHints(hints)
-
-
-class AliasedLineItem(QGraphicsLineItem):
-
-
-	def __init__(self, *args):
-		super().__init__(*args)
-
-	def paint(self, painter, option, widget=0):
-		hints = painter.renderHints()
-		painter.setRenderHint(QPainter.Antialiasing, False)
-		super().paint(painter, option, widget)
-		painter.setRenderHints(hints)
 
 
 class EditorWindow(QMainWindow):
@@ -56,7 +32,6 @@ class EditorWindow(QMainWindow):
 		# Load UI
 		self.ui = Ui_MainWindow()
 		self.ui.setupUi(self)
-		
 
 		self.setup_scene()
 		self.setup_signals()
@@ -73,8 +48,6 @@ class EditorWindow(QMainWindow):
 		self.mouse_mode = MouseMode.Free
 
 		self.preview_shape = None
-		self.preview_path = QPainterPath()
-		self.add_shape(self.preview_path)
 
 	def setup_signals(self):
 		# Set signals for primitive shapes
@@ -109,32 +82,22 @@ class EditorWindow(QMainWindow):
 				l = self.preview_shape
 				l.setLine(l.line().x1(), l.line().y1(), pos.x(), pos.y())
 
-			elif self.mouse_mode == MouseMode.Curve2:
-				points = self.editor.points[:]
-				points.append([pos.x(), pos.y()])
-				points = [num for elem in points for num in elem]
-				points = [points[i] for i in [0, 1, 4, 5, 2, 3]]
-				self.preview_path.cubicTo(QPointF(*points[2:4]), QPointF(*points[2:4]), QPointF(*points[4:]))
-
-			elif self.mouse_mode == MouseMode.Rectangle:
+			elif self.mouse_mode in [MouseMode.Rectangle, MouseMode.Ellipse]:
 				r = self.preview_shape
 				origin = self.editor.points[0] # dirty hack
 				x, y = origin[0], origin[1]
 				width, height = pos.x() - x, pos.y() - y
 				r.setRect(QRectF(x, y, width, height).normalized())
 
-			elif self.mouse_mode == MouseMode.Ellipse:
-				e = self.preview_shape
-				origin = self.editor.points[0] # dirty hack again
-				x, y = origin[0], origin[1]
-				width, height = pos.x() - x, pos.y() - y
-				e.setRect(QRectF(x, y, width, height).normalized())
+			elif self.mouse_mode == MouseMode.Curve2:
+				c = self.preview_shape
+				c.set_anchor(pos.x(), pos.y())
+				c.setup()
 
 		elif event.type() == QEvent.MouseButtonPress: # Mouse button press
 			if source is self.ui.map_view: # from map
 				if self.mouse_mode == MouseMode.Free: # and not drawing anything
 					self.mouse_mode = self.get_mouse_mode() # switch to what we're drawing
-					print("mouse mode to", self.mouse_mode)
 					pos = self.ui.map_view.mapFromGlobal(event.globalPos())
 					self.editor.add_point(pos)
 					
@@ -145,6 +108,8 @@ class EditorWindow(QMainWindow):
 						points.append([pos.x(), pos.y()])
 						points = [num for elem in points for num in elem]
 						self.preview_shape = QGraphicsLineItem(*points[:4])
+						pen = QPen(QColor(), self.editor.thickness, Qt.SolidLine, Qt.SquareCap)
+						self.preview_shape.setPen(pen)
 					# or draw the correct shape
 					else:
 						self.preview_shape = self.editor.make_item([pos.x(), pos.y()]*3)
@@ -153,9 +118,10 @@ class EditorWindow(QMainWindow):
 				elif self.mouse_mode == MouseMode.Curve2:
 					self.mouse_mode = MouseMode.Free
 					pos = self.ui.map_view.mapFromGlobal(event.globalPos())
+					self.remove_shape(self.preview_shape)
 					self.editor.add_point(pos)
+					self.ui.map_view.repaint()
 					
-
 		elif event.type() == QEvent.MouseButtonRelease:
 			if self.mouse_mode in [MouseMode.Line, MouseMode.Rectangle, MouseMode.Ellipse]:
 				self.mouse_mode = MouseMode.Free
@@ -168,22 +134,25 @@ class EditorWindow(QMainWindow):
 				pos = self.ui.map_view.mapFromGlobal(event.globalPos())
 				self.editor.add_point(pos)
 				self.remove_shape(self.preview_shape)
-				self.preview_path.setElementPositionAt(0, pos.x(), pos.y())
+				points = [num for elem in self.editor.points for num in elem]
+				points = points + [pos.x(), pos.y()]
+				self.preview_shape = self.editor.make_item(points)
+				self.preview_shape.setup()
+				self.add_shape(self.preview_shape)
 				
+		elif event.type() == QEvent.KeyRelease:
+			if event.key() == Qt.Key_Space:
+				t = QTransform()
+				t.scale(2,2)
+				self.ui.map_view.setTransform(t)
 
 		return QMainWindow.eventFilter(self, source, event)
 
 	def add_shape(self, shape):
-		if isinstance(shape, QPainterPath):
-			self.map_scene.addPath(shape)
-		else:
-			self.map_scene.addItem(shape)
+		self.map_scene.addItem(shape)
 
 	def remove_shape(self, shape):
-		if isinstance(shape, QPainterPath):
-			shape = QPainterPath()
-		else:
-			self.map_scene.removeItem(shape)
+		self.map_scene.removeItem(shape)
 
 	def get_mouse_mode(self):
 		name = self.ui.primitives_group.checkedButton().objectName()
@@ -227,12 +196,3 @@ class EditorWindow(QMainWindow):
 	@pyqtSlot()
 	def quality_sup(self):
 		self.ui.map_view.setRenderHints(QPainter.Antialiasing)
-
-
-if __name__ == "__main__":
-
-	app = QApplication(sys.argv)
-	editor = EditorWindow()
-	editor.show()
-	app.installEventFilter(editor)
-	sys.exit(app.exec_())
