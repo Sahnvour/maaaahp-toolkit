@@ -26,7 +26,6 @@ class Editor():
 		self.app = QApplication(sys.argv)
 		self.mainWindow = EditorWindow()
 		self.mainWindow.show()
-		self.app.installEventFilter(self.mainWindow)
 		self.mainWindow.editor = self
 
 		self.map = prim.Map()

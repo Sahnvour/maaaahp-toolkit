@@ -31,6 +31,10 @@ class AliasedLineItem(QGraphicsLineItem):
 class CustomItem():
 
 
+	def __init__(self):
+		self.setFlags(QGraphicsItem.ItemIsMovable | QGraphicsItem.ItemIsSelectable)
+		self.setAcceptedMouseButtons(Qt.RightButton)
+
 	def set_shape(self, shape):
 		self.selected = False
 		self.shape = shape
@@ -51,13 +55,14 @@ class CustomItem():
 			except AttributeError:
 				pass
 
-	def moveBy(self, x, y):
-		super(QGraphicsItem, self).moveBy(x, y)
-		print("move by", x, y)
-
 	def set_pos(self, point):
 		old_pos = self.pos()
 		self.setPos(point)
+
+	def setSelected(self, value):
+		print("selected")
+		super().setSelected(value)
+
 
 
 class CustomRectItem(AliasedRectItem, CustomItem):

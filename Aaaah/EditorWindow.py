@@ -5,7 +5,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from .MainWindow import Ui_MainWindow
-from .CustomGraphicsView import CustomGraphicsView
+from .CustomGraphicsScene import *
 
 class MouseMode():
 	Free = 0
@@ -39,9 +39,9 @@ class EditorWindow(QMainWindow):
 		self.setup_signals()
 
 	def setup_scene(self):
-		self.map_scene = QGraphicsScene()
+		self.map_scene = CustomGraphicsScene()
 		self.map_scene.setBackgroundBrush(QColor(48, 48, 54))
-		self.ui.map_view = CustomGraphicsView(self, self.map_scene, self.ui.centralwidget)
+		self.ui.map_view.setScene(self.map_scene)
 		self.ui.map_view.setSceneRect(QRectF(0, 0, 800, 400))
 		self.ruler = [AliasedLineItem(0, 0, 800, 0), AliasedLineItem(0, 0, 0, 400)]
 		pen = QPen(QColor(255, 0, 0))
@@ -62,6 +62,10 @@ class EditorWindow(QMainWindow):
 		self.ui.isFull.stateChanged.connect(self.full_shapes)
 		self.ui.opacity.valueChanged.connect(self.opacity_changed)
 
+		self.map_scene.mouseClicked.connect(self.draw_click)
+		self.map_scene.mouseReleased.connect(self.draw_release)
+		self.map_scene.mouseMoved.connect(self.mouse_move)
+
 		# Shortcuts
 		self.shortcuts = {}
 		self.add_shortcut("Ctrl+M", self.quality_inf)
@@ -72,24 +76,7 @@ class EditorWindow(QMainWindow):
 		shortcut.activated.connect(slot)
 		self.shortcuts[command] = shortcut
 
-	def eventFilter(self, source, event):
-		if isinstance(event, QMouseEvent):
-			pos = self.ui.map_view.mapFromGlobal(event.globalPos())
-
-		if event.type() == QEvent.MouseMove:
-			if event.modifiers() == Qt.ControlModifier:
-				self.multi_select = True
-			else:
-				self.mouse_move(event)
-				
-		elif event.type() == QEvent.KeyRelease:
-			if event.key() == Qt.Key_Space:
-				pass
-
-		return QMainWindow.eventFilter(self, source, event)
-
-	def mouse_move(self, event):
-		pos = self.ui.map_view.mapFromGlobal(event.globalPos())
+	def mouse_move(self, pos):
 		self.ui.statusbar.showMessage("({0};{1})".format(pos.x(), pos.y()))
 		if self.ui.ruler.isChecked:
 			self.ruler[0].setY(pos.y())
@@ -112,10 +99,9 @@ class EditorWindow(QMainWindow):
 			c.set_anchor(pos.x(), pos.y())
 			c.setup()
 
-	def draw_click(self, event):
+	def draw_click(self, pos):
 		if self.mouse_mode == MouseMode.Free: # and not drawing anything
 			self.mouse_mode = self.get_mouse_mode() # switch to what we're drawing
-			pos = self.ui.map_view.mapFromGlobal(event.globalPos())
 			self.editor.add_point(pos)
 			
 			# When drawing a curve, preview a line instead
@@ -134,21 +120,18 @@ class EditorWindow(QMainWindow):
 
 		elif self.mouse_mode == MouseMode.Curve2:
 			self.mouse_mode = MouseMode.Free
-			pos = self.ui.map_view.mapFromGlobal(event.globalPos())
 			self.map_scene.removeItem(self.preview_shape)
 			self.editor.add_point(pos)
 			self.ui.map_view.repaint()
 
-	def draw_release(self, event):
+	def draw_release(self, pos):
 		if self.mouse_mode in [MouseMode.Line, MouseMode.Rectangle, MouseMode.Ellipse]:
 			self.mouse_mode = MouseMode.Free
 			self.map_scene.removeItem(self.preview_shape)
-			pos = self.ui.map_view.mapFromGlobal(event.globalPos())
 			self.editor.add_point(pos)
 			self.ui.map_view.repaint()
 		elif self.mouse_mode == MouseMode.Curve:
 			self.mouse_mode = MouseMode.Curve2
-			pos = self.ui.map_view.mapFromGlobal(event.globalPos())
 			self.editor.add_point(pos)
 			self.map_scene.removeItem(self.preview_shape)
 			points = [num for elem in self.editor.points for num in elem]
