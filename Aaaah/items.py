@@ -32,36 +32,28 @@ class CustomItem():
 
 
 	def __init__(self):
+		self.setBoundingRegionGranularity(1)
 		self.setFlags(QGraphicsItem.ItemIsMovable | QGraphicsItem.ItemIsSelectable)
 		self.setAcceptedMouseButtons(Qt.RightButton)
+		self.last_click = None
+		self.selected = False
 
 	def set_shape(self, shape):
-		self.selected = False
 		self.shape = shape
-
-	def select(self):
-		if self.selected:
-			self.selected = False
-			self.pen().setColor(QColor(0, 0, 0))
-			try:
-				self.setBrush(QColor(0, 0, 0))
-			except AttributeError:
-				pass
-		else:
-			self.selected = True
-			self.pen().setColor(QColor(255, 255, 255))
-			try:
-				self.setBrush(QColor(255, 255, 255))
-			except AttributeError:
-				pass
 
 	def set_pos(self, point):
 		old_pos = self.pos()
 		self.setPos(point)
 
-	def setSelected(self, value):
-		print("selected")
-		super().setSelected(value)
+	def mousePressEvent(self, event):
+		1
+
+	def mouseReleaseEvent(self, event):
+		self.selected = not self.selected
+
+	def contains(self, qpoint):
+		print("custom contains:", self.path().contains(qpoint))
+		return self.path().contains(qpoint)
 
 
 

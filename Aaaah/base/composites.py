@@ -27,6 +27,10 @@ def triangle(thickness, x1, y1, x2, y2, x3, y3):
 	l3 = line(thickness, x1, y1, x3 - x1, y3 - y1)
 	return Group(l1, l2, l3)
 
+def circle(thickness, isFull, x, y, radius):
+	Ox = x - radius
+	Oy = y - radius
+	return ellipse(thickness, isFull, Ox, Oy, radius*2, radius*2)
 
 def angle(thickness, x, y, lenght1, lenght2, angle, angleToOrigin=0):
 	angle = radians(angle)
@@ -64,14 +68,14 @@ def any_rectangle(thickness, isFull, x1, y1, x2, y2, x3, y3, x4, y4):
 
 
 Orientations = {
-	"ul" :  (-1, -1),
-	"u"  :  (0, -1),
-	"ur" :  (1, -1),
-	"l"  :  (-1, 0),
-	"r"  :  (1, 0),
-	"bl" :  (-1, 1),
-	"b"  :  (0, 1),
-	"br" :  (1, 1)
+	7 :  (-1, -1),
+	8 :  (0, -1),
+	9 :  (1, -1),
+	4 :  (-1, 0),
+	6 :  (1, 0),
+	1 :  (-1, 1),
+	2 :  (0, 1),
+	3 :  (1, 1)
 }
 
 def half_circle(thickness, x, y, orientation):
