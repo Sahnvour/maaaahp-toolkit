@@ -8,15 +8,51 @@ from .base import primitives as prim
 from .base import composites as comp
 from .base import generators as gen
 
+def make_line(thickness, points):
+	item = LineItem(*points[:4])
+	pen = QPen(QColor(), thickness, Qt.SolidLine, Qt.RoundCap)
+	item.setPen(pen)
+
+	return item, pen
+
+def make_curve(thickness, points):
+	points = [points[i] for i in [0, 1, 4, 5, 2, 3]]
+	item = CurveItem(*points[:2])
+	item.set_anchor(*points[2:4])
+	item.set_end(*points[4:])
+	pen = QPen(QColor(), thickness, Qt.SolidLine, Qt.RoundCap)
+	item.setPen(pen)
+	item.setup()
+
+	return item, pen
+
+def make_rectangle(thickness, points):
+	points[2] = points[2] - points[0]
+	points[3] = points[3] - points[1]
+	item = RectItem(*points[:4])
+	pen = QPen(QColor(), thickness, Qt.SolidLine, Qt.SquareCap)
+	pen.setJoinStyle(Qt.MiterJoin)
+	item.setPen(pen)
+
+	return item, pen
+
+def make_ellipse(thickness, points):
+	points[2] = points[2] - points[0]
+	points[3] = points[3] - points[1]
+	item = EllipseItem(*points[:4])
+	pen = QPen(QColor(), thickness, Qt.SolidLine, Qt.SquareCap)
+	item.setPen(pen)
+
+	return item, pen
 
 shapes = {
-	'line' 		: {'func' : prim.line, 'points' : 2},
+	'line' 		: {'func' : prim.line, 'points' : 2, 'make' : make_line},
 
-	'curve' 	: {'func' : prim.curve, 'points' : 3},
+	'curve' 	: {'func' : prim.curve, 'points' : 3, 'make' : make_curve},
 
-	'rectangle' : {'func' : prim.rectangle, 'points' : 2},
+	'rectangle' : {'func' : prim.rectangle, 'points' : 2, 'make' : make_rectangle},
 
-	'ellipse' 	: {'func' : prim.ellipse, 'points' : 2}
+	'ellipse' 	: {'func' : prim.ellipse, 'points' : 2, 'make' : make_ellipse}
 	}
 
 class Editor():
@@ -34,7 +70,7 @@ class Editor():
 		self.points = []
 		self.pens = {}
 		self.thickness = 1
-		self.isFull = Shape.Empty
+		self.isFull = prim.Shape.Empty
 		self.shape = shapes['line']
 	
 	def run(self):
@@ -42,10 +78,7 @@ class Editor():
 
 	def set_shape(self, name):
 		self.points.clear()
-		if name in shapes.keys():
-			self.shape = shapes[name]
-		else:
-			raise RuntimeError("{} is not a valid shape name".format(name))
+		self.shape = shapes[name]
 
 	def add_point(self, pos):
 		if self.shape is None:
@@ -61,7 +94,7 @@ class Editor():
 		self.thickness = value
 
 	def set_full(self, value):
-		self.isFull = Shape.Full if value else Shape.Empty
+		self.isFull = prim.Shape.Full if value else prim.Shape.Empty
 
 	def process_shape(self):
 		points = [num for elem in self.points for num in elem]
@@ -99,45 +132,15 @@ class Editor():
 		raise RuntimeError("the shape wasnt a primitive one, this should never happen")
 
 	def make_item(self, points):
-		pen = None
-		item = None
-
-		if self.shape['func'] is line:
-			item = CustomLineItem(*points[:4])
-			pen = QPen(QColor(), self.thickness, Qt.SolidLine, Qt.RoundCap)
-			item.setPen(pen)
-
-		elif self.shape['func'] is prim.curve:
-			points = [points[i] for i in [0, 1, 4, 5, 2, 3]]
-			item = CustomCurveItem(*points[:2])
-			item.set_anchor(*points[2:4])
-			item.set_end(*points[4:])
-			pen = QPen(QColor(), self.thickness, Qt.SolidLine, Qt.RoundCap)
-			item.setPen(pen)
-			item.setup()
-
-		elif self.shape['func'] is prim.rectangle:
-			points[2] = points[2] - points[0]
-			points[3] = points[3] - points[1]
-			item = CustomRectItem(*points[:4])
-			pen = QPen(QColor(), self.thickness, Qt.SolidLine, Qt.SquareCap)
-			pen.setJoinStyle(Qt.MiterJoin)
-			item.setPen(pen)
-
-		elif self.shape['func'] is prim.ellipse:
-			points[2] = points[2] - points[0]
-			points[3] = points[3] - points[1]
-			item = CustomEllipseItem(*points[:4])
-			pen = QPen(QColor(), self.thickness, Qt.SolidLine, Qt.SquareCap)
-			item.setPen(pen)
-
-		else:
-			raise RuntimeError("the shape wasnt a primitive one, this should never happen")
+		item, pen = self.shape['make'](self.thickness, points)
 
 		if self.isFull and self.shape['func'] in [prim.rectangle, prim.ellipse]:
 			item.setBrush(QColor(0,0,0))
 
 		return item
+
+
+
 
 if __name__ == "__main__":
 	Editor().run()

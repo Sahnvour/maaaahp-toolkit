@@ -28,7 +28,8 @@ class AliasedLineItem(QGraphicsLineItem):
 		painter.setRenderHints(hints)
 
 
-class CustomItem():
+
+class Shape():
 
 
 	def __init__(self):
@@ -46,7 +47,7 @@ class CustomItem():
 		self.setPos(point)
 
 	def mousePressEvent(self, event):
-		1
+		pass
 
 	def mouseReleaseEvent(self, event):
 		self.selected = not self.selected
@@ -57,37 +58,58 @@ class CustomItem():
 
 
 
-class CustomRectItem(AliasedRectItem, CustomItem):
+class AliasedShape(Shape):
+
+
+	def __init__(self):
+		Shape.__init__(self)
+
+	def repaint(self, parentClass, painter, option, widget=0):
+		hints = painter.renderHints()
+		painter.setRenderHint(QPainter.Antialiasing, False)
+		parentClass.paint(self, painter, option, widget)
+		painter.setRenderHints(hints)
+
+
+
+class RectItem(QGraphicsRectItem, Shape):
 
 
 	def __init__(self, *args):
-		super(AliasedRectItem, self).__init__(*args)
-		super(CustomItem, self).__init__()
+		QGraphicsRectItem.__init__(self, *args)
+		AliasedShape.__init__(self)
+
+	def paint(self, painter, option, widget=0):
+		hints = painter.renderHints()
+		painter.setRenderHint(QPainter.Antialiasing, False)
+		QGraphicsRectItem.paint(self, painter, option, widget)
+		painter.setRenderHints(hints)
 
 
-class CustomLineItem(QGraphicsLineItem, CustomItem):
+class LineItem(QGraphicsLineItem, Shape):
 
 
 	def __init__(self, *args):
-		super(QGraphicsLineItem, self).__init__(*args)
-		super(CustomItem, self).__init__()
+		QGraphicsLineItem.__init__(self, *args)
+		Shape.__init__(self)
 
 
-class CustomEllipseItem(QGraphicsEllipseItem, CustomItem):
+class EllipseItem(QGraphicsEllipseItem, Shape):
 
 
 	def __init__(self, *args):
-		super(QGraphicsEllipseItem, self).__init__(*args)
-		super(CustomItem, self).__init__()
+		QGraphicsEllipseItem.__init__(self, *args)
+		Shape.__init__(self)
 
 
-class CustomCurveItem(QGraphicsPathItem, CustomItem):
+
+class CurveItem(QGraphicsPathItem, Shape):
 
 
 	def __init__(self, x, y):
 		self.start = QPointF(x, y)
-		super(QGraphicsPathItem, self).__init__()
-		super(CustomItem, self).__init__()
+		QGraphicsPathItem.__init__(self)
+		Shape.__init__(self)
 
 	def set_start(self, x, y):
 		self.start = QPointF(x, y)
