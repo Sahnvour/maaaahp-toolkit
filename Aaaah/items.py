@@ -51,10 +51,7 @@ class Shape():
 
 	def mouseReleaseEvent(self, event):
 		self.selected = not self.selected
-
-	def contains(self, qpoint):
-		print("custom contains:", self.path().contains(qpoint))
-		return self.path().contains(qpoint)
+		self.setSelected(not self.selected)
 
 
 
@@ -103,17 +100,19 @@ class EllipseItem(QGraphicsEllipseItem, Shape):
 
 
 
-class CurveItem(QGraphicsPathItem, Shape):
+class CurveItem(QGraphicsPixmapItem, Shape):
 
 
 	def __init__(self, x, y):
 		self.start = QPointF(x, y)
-		QGraphicsPathItem.__init__(self)
+		QGraphicsPixmapItem.__init__(self)
 		Shape.__init__(self)
+		self.setShapeMode(QGraphicsPixmapItem.MaskShape)
+		self.path = QPainterPath()
+		self.path.moveTo(x, y)
 
-	def set_start(self, x, y):
-		self.start = QPointF(x, y)
-		self.path().moveTo(self.start)
+	def setPen(self, pen):
+		self.pen = pen
 
 	def set_end(self, x, y):
 		self.end = QPointF(x, y)
@@ -124,6 +123,19 @@ class CurveItem(QGraphicsPathItem, Shape):
 	def setup(self):
 		self.anchor1 = self.start + (2/3) * (self.anchor - self.start)
 		self.anchor2 = self.end + (2/3) * (self.anchor - self.end)
-		path = QPainterPath(self.start)
-		path.cubicTo(self.anchor1, self.anchor2, self.end)
-		self.setPath(path)
+		self.path = QPainterPath(self.start)
+		self.path.cubicTo(self.anchor1, self.anchor2, self.end)
+
+		thickness = self.pen.width()
+		rect = self.path.boundingRect()
+		rect.setWidth(rect.width()+thickness)
+		rect.setHeight(rect.height()+thickness)
+		canvas = QImage(rect.size().toSize(), QImage.Format_ARGB32)
+		canvas.fill(QColor(0,0,0,0))
+		painter = QPainter(canvas)
+		painter.setPen(self.pen)
+		painter.drawPath(self.path.translated(-rect.topLeft()))
+		painter.end()
+		self.result = QPainterPath()
+		self.setPixmap(QPixmap.fromImage(canvas))
+		self.setPos(self.start)
