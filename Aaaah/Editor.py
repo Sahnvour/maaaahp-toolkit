@@ -102,6 +102,7 @@ class Editor():
 		item = self.make_item(points[:])
 		shape = self.make_shape(points[:])
 		item.set_shape(shape)
+		item.setup()
 		self.map.add(shape)
 		self.mainWindow.map_scene.addItem(item)
 

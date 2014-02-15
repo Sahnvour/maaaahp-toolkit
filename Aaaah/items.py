@@ -51,25 +51,10 @@ class Shape():
 
 	def mouseReleaseEvent(self, event):
 		self.selected = not self.selected
+		self.setSelected(self.selected)
 
-	def contains(self, qpoint):
-		print("custom contains:", self.path().contains(qpoint))
-		return self.path().contains(qpoint)
-
-
-
-class AliasedShape(Shape):
-
-
-	def __init__(self):
-		Shape.__init__(self)
-
-	def repaint(self, parentClass, painter, option, widget=0):
-		hints = painter.renderHints()
-		painter.setRenderHint(QPainter.Antialiasing, False)
-		parentClass.paint(self, painter, option, widget)
-		painter.setRenderHints(hints)
-
+	def setup(self):
+		pass
 
 
 class RectItem(QGraphicsRectItem, Shape):
@@ -77,13 +62,38 @@ class RectItem(QGraphicsRectItem, Shape):
 
 	def __init__(self, *args):
 		QGraphicsRectItem.__init__(self, *args)
-		AliasedShape.__init__(self)
+		Shape.__init__(self)
+
+	def setup(self):
+		self.setup_picking()
+
+	def setup_picking(self):
+		r = self.rect()
+		thick = self.shape.thickness
+		topLeft = QPointF(r.topLeft()) + QPointF(thick/2+1, thick/2+1)
+		size = QSizeF(r.size()) - QSizeF(thick, thick)
+		self.holeRect = QRectF(topLeft, size)
+		print(str(self.rect()))
+		print(str(self.holeRect))
+		item = QGraphicsRectItem(self.holeRect)
+		item.setBrush(QColor(255, 0, 0))
+		item.setParentItem(self)
 
 	def paint(self, painter, option, widget=0):
 		hints = painter.renderHints()
 		painter.setRenderHint(QPainter.Antialiasing, False)
 		QGraphicsRectItem.paint(self, painter, option, widget)
 		painter.setRenderHints(hints)
+
+	def contains(self, pos):
+		if self.shape.isFull:
+			return self.rect().contains(pos)
+		else:
+			outline = self.rect().contains(pos)
+			hole = self.holeRect.contains(pos)
+			print("outline:", outline, "hole:", hole)
+			return False
+			return outline and not hole
 
 
 class LineItem(QGraphicsLineItem, Shape):
@@ -92,6 +102,7 @@ class LineItem(QGraphicsLineItem, Shape):
 	def __init__(self, *args):
 		QGraphicsLineItem.__init__(self, *args)
 		Shape.__init__(self)
+
 
 
 class EllipseItem(QGraphicsEllipseItem, Shape):
