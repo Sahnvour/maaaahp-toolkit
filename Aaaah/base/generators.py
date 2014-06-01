@@ -1,9 +1,8 @@
 from itertools import islice
 
 class _Sliceable(object):
-
-
-    """Sliceable(iterable) is an object that wraps 'iterable' and
+    """
+    Sliceable(iterable) is an object that wraps 'iterable' and
     generates items from 'iterable' when subscripted. For example:
 
         >>> from itertools import count, cycle

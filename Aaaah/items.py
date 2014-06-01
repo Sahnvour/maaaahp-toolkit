@@ -1,6 +1,7 @@
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+from copy import copy
 
 class AliasedRectItem(QGraphicsRectItem):
 
@@ -54,6 +55,11 @@ class Shape():
 		self.setSelected(self.selected)
 
 	def setup(self):
+		"""
+		This method get called by the editor on
+		every item it is creating, in case it is
+		needed.
+		"""
 		pass
 
 
@@ -63,21 +69,29 @@ class RectItem(QGraphicsRectItem, Shape):
 	def __init__(self, *args):
 		QGraphicsRectItem.__init__(self, *args)
 		Shape.__init__(self)
+		self.pick_shape = None
 
 	def setup(self):
 		self.setup_picking()
 
 	def setup_picking(self):
-		r = self.rect()
+		self.pick_shape = QPainterPath()
+		rect = self.rect()
 		thick = self.shape.thickness
-		topLeft = QPointF(r.topLeft()) + QPointF(thick/2+1, thick/2+1)
-		size = QSizeF(r.size()) - QSizeF(thick, thick)
-		self.holeRect = QRectF(topLeft, size)
-		print(str(self.rect()))
-		print(str(self.holeRect))
-		item = QGraphicsRectItem(self.holeRect)
-		item.setBrush(QColor(255, 0, 0))
-		item.setParentItem(self)
+		hibar = QRectF(\
+			rect.topLeft() - QPointF(thick//2, thick//2),\
+			rect.topRight() + QPointF(thick/2, thick/2)
+			)
+		self.pick_shape.addRect(hibar)
+		lowbar = copy(hibar)
+		lowbar.moveTo(rect.bottomLeft() - QPointF(thick//2, thick//2))
+		rects = [hibar, lowbar]
+
+		for r in rects:
+			self.pick_shape.addRect(r)
+			item = QGraphicsRectItem(r)
+			item.setBrush(QColor(255,0,0))
+			item.setParentItem(self)
 
 	def paint(self, painter, option, widget=0):
 		hints = painter.renderHints()
@@ -85,15 +99,10 @@ class RectItem(QGraphicsRectItem, Shape):
 		QGraphicsRectItem.paint(self, painter, option, widget)
 		painter.setRenderHints(hints)
 
-	def contains(self, pos):
-		if self.shape.isFull:
-			return self.rect().contains(pos)
-		else:
-			outline = self.rect().contains(pos)
-			hole = self.holeRect.contains(pos)
-			print("outline:", outline, "hole:", hole)
-			return False
-			return outline and not hole
+	def shape(self):
+		if self.pick_shape:
+			return self.pick_shape
+		return QGraphicsRectItem.shape(self)
 
 
 class LineItem(QGraphicsLineItem, Shape):
